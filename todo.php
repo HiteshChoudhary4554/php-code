@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,7 +57,6 @@
         </form>
         </div>
 </body>
-=======
 <!DOCTYPE html>
 <html>
 <head>
@@ -121,5 +119,4 @@
         </form>
         </div>
 </body>
->>>>>>> 0896d49af89b64a95307b7159bc34758cd56fad2
 </html>
