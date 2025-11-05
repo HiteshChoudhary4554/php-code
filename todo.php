@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <!-- Ishan Dave -->
     <title>Add Todo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background: #f2f2f2;
         }
+
         .container {
             width: 370px;
             margin: 80px auto;
@@ -16,11 +17,14 @@
             border-radius: 8px;
             box-shadow: 0 0 10px #ccc;
         }
+
         h2 {
             text-align: center;
             margin-bottom: 25px;
         }
-        input[type="text"], textarea {
+
+        input[type="text"],
+        textarea {
             width: 100%;
             padding: 10px;
             margin: 8px 0 18px 0;
@@ -28,6 +32,7 @@
             border-radius: 4px;
             resize: none;
         }
+
         button {
             width: 100%;
             padding: 10px;
@@ -37,10 +42,10 @@
             border-radius: 4px;
             font-size: 16px;
         }
-        
     </style>
 </head>
-<body >
+
+<body>
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // You can add code here to save the todo to a database or file
@@ -56,6 +61,7 @@
             <textarea name="description" rows="4" placeholder="Task Description" required></textarea>
             <button type="submit">Add Todo</button>
         </form>
-        </div>
+    </div>
 </body>
+
 </html>
