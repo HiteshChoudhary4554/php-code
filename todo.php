@@ -22,6 +22,10 @@
             text-align: center;
             margin-bottom: 25px;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ed42db8dcce62da7c8326bee14cea95b1ee2db55
         label {
             display: block;
             font-weight: 600;
@@ -29,9 +33,14 @@
             color: #333;
             font-size: 14px;
         }
+
         .form-group {
             margin-bottom: 14px;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ed42db8dcce62da7c8326bee14cea95b1ee2db55
         input[type="text"], textarea, input[type="date"], select {
             width: 100%;
             padding: 10px;
@@ -41,7 +50,13 @@
             box-sizing: border-box;
             font-size: 14px;
         }
+<<<<<<< HEAD
         textarea { resize: vertical; }
+=======
+
+        textarea { resize: vertical; }
+
+>>>>>>> ed42db8dcce62da7c8326bee14cea95b1ee2db55
         button {
             width: 100%;
             padding: 10px;
@@ -51,6 +66,39 @@
             border-radius: 4px;
             font-size: 16px;
         }
+
+        /* Home and Logout button styling */
+        .home-btn {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #28a745;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            z-index: 1000;
+            transition: background 0.15s ease;
+        }
+        .home-btn:hover { background: #218838; }
+
+        .logout-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #dc3545;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            z-index: 1000;
+            transition: background 0.15s ease;
+        }
+        .logout-btn:hover { background: #c82333; }
     </style>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -70,8 +118,9 @@
         exit();
     }
     ?>
-    <!-- Logout button (HTML + CSS only). Update href if your logout handler is at a different path -->
-    <a href="logout.php" class="logout-btn">Logout</a> 
+    <!-- Home and Logout buttons (HTML + CSS only). Update hrefs if needed -->
+    <a href="home.php" class="home-btn">Home</a>
+    <a href="logout.php" class="logout-btn">Logout</a>
     <div class="container">
         <h2>Add Todo</h2>
         <form method="post" action="">
