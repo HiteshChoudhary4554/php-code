@@ -35,11 +35,7 @@
         .add-btn:hover {
             background: #0056b3;
         }
-<<<<<<< HEAD
-        /* Logout button styling: positioned at the top-right of the page */
         
-=======
->>>>>>> 05638eff0e1ca795c54cb6fb0bbce99fbaf02d72
     </style>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -62,5 +58,4 @@
         </form>
     </div>
 </body>
-
 </html>
