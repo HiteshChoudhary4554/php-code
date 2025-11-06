@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <!-- Ishan Dave -->
     <title>Add Todo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background: #f2f2f2;
         }
+
         .container {
             width: 370px;
             margin: 80px auto;
@@ -16,10 +17,12 @@
             border-radius: 8px;
             box-shadow: 0 0 10px #ccc;
         }
+
         h2 {
             text-align: center;
             margin-bottom: 25px;
         }
+<<<<<<< HEAD
         label {
             display: block;
             font-weight: 600;
@@ -31,6 +34,11 @@
             margin-bottom: 14px;
         }
         input[type="text"], textarea, input[type="date"], select {
+=======
+
+        input[type="text"],
+        textarea {
+>>>>>>> 05638eff0e1ca795c54cb6fb0bbce99fbaf02d72
             width: 100%;
             padding: 10px;
             margin: 6px 0 8px 0;
@@ -39,7 +47,11 @@
             box-sizing: border-box;
             font-size: 14px;
         }
+<<<<<<< HEAD
         textarea { resize: vertical; }
+=======
+
+>>>>>>> 05638eff0e1ca795c54cb6fb0bbce99fbaf02d72
         button {
             width: 100%;
             padding: 10px;
@@ -49,11 +61,11 @@
             border-radius: 4px;
             font-size: 16px;
         }
-        
     </style>
     <link rel="stylesheet" href="style.css">
 </head>
-<body >
+
+<body>
     <?php
     session_start();
     if (!isset($_SESSION['username'])) {
@@ -94,6 +106,7 @@
             </div>
             <button type="submit">Add Todo</button>
         </form>
-        </div>
+    </div>
 </body>
+
 </html>

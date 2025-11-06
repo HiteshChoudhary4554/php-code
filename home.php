@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Home</title>
     <style>
@@ -16,6 +17,7 @@
             box-shadow: 0 0 10px #ccc;
             text-align: center;
         }
+
         .add-btn {
             display: inline-block;
             width: 60px;
@@ -29,14 +31,19 @@
             margin-top: 40px;
             transition: background 0.2s;
         }
+
         .add-btn:hover {
             background: #0056b3;
         }
+<<<<<<< HEAD
         /* Logout button styling: positioned at the top-right of the page */
         
+=======
+>>>>>>> 05638eff0e1ca795c54cb6fb0bbce99fbaf02d72
     </style>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <?php
     session_start();
@@ -53,6 +60,7 @@
         <form action="todo.php" method="get">
             <button type="submit" class="add-btn" title="Add New Todo">+</button>
         </form>
-        </div>
+    </div>
 </body>
+
 </html>
