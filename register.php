@@ -67,7 +67,7 @@
     $servername = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "hitesh books store";
+    $dbname = "todomanager";
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -77,11 +77,13 @@
       die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql =  "INSERT INTO `users` (`firstname`, `lastname`, `email`, `password`)
+    $sql =  "INSERT INTO `userdata` (`firstname`, `lastname`, `email`, `Password`)
         VALUES ('$firstname', '$lastname', '$email', '$Password')";
-
     if ($conn->query($sql) === TRUE) {
-      echo "New record created successfully";
+      session_start(); // Start the session
+      $_SESSION['username'] = $email; // Store username in session
+      $_SESSION['user_id'] = $password; // Store user password in session
+      header("Location: home.php");
     } else {
       echo "Error: " . $sql . "<br>" . $conn->error;
     }

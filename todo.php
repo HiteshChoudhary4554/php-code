@@ -20,14 +20,26 @@
             text-align: center;
             margin-bottom: 25px;
         }
-        input[type="text"], textarea {
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        input[type="text"], textarea, input[type="date"], select {
             width: 100%;
             padding: 10px;
-            margin: 8px 0 18px 0;
+            margin: 6px 0 8px 0;
             border: 1px solid #ccc;
             border-radius: 4px;
-            resize: none;
+            box-sizing: border-box;
+            font-size: 14px;
         }
+        textarea { resize: vertical; }
         button {
             width: 100%;
             padding: 10px;
@@ -39,9 +51,16 @@
         }
         
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body >
     <?php
+    session_start();
+    if (!isset($_SESSION['username'])) {
+        // User is not logged in, redirect to login page
+        header("Location: login.php");
+        exit();
+    } 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // You can add code here to save the todo to a database or file
         // For now, just redirect to home.php after submit
@@ -49,11 +68,30 @@
         exit();
     }
     ?>
+    <!-- Logout button (HTML + CSS only). Update href if your logout handler is at a different path -->
+    <a href="logout.php" class="logout-btn">Logout</a> 
     <div class="container">
         <h2>Add Todo</h2>
         <form method="post" action="">
-            <input type="text" name="title" placeholder="Todo Title" required>
-            <textarea name="description" rows="4" placeholder="Task Description" required></textarea>
+            <div class="form-group">
+                <label for="title">Todo Title</label>
+                <input type="text" id="title" name="title" placeholder="Enter title" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Task Description</label>
+                <textarea id="description" name="description" rows="4" placeholder="Describe the task" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="due_date">Due Date</label>
+                <input type="date" id="due_date" name="due_date">
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="" disabled selected>Select category (will load from DB)</option>
+                    <!-- Options will be populated from database in server-side code later -->
+                </select>
+            </div>
             <button type="submit">Add Todo</button>
         </form>
         </div>

@@ -32,14 +32,24 @@
         .add-btn:hover {
             background: #0056b3;
         }
+        /* Logout button styling: positioned at the top-right of the page */
         
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <?php
+    session_start();
+    if (!isset($_SESSION['username'])) {
+        // User is not logged in, redirect to login page
+        header("Location: login.php");
+        exit(); 
+    } 
     ?>
+    <!-- Logout button (HTML + CSS only). Update href if your logout handler is at a different path -->
+    <a href="logout.php" class="logout-btn">Logout</a>   
     <div class="container">
-        <h2>Welcome to Home Page</h2>
+        <h2>Welcome to Todo Manager</h2>
         <form action="todo.php" method="get">
             <button type="submit" class="add-btn" title="Add New Todo">+</button>
         </form>

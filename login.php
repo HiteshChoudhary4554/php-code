@@ -8,6 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             background: #f2f2f2;
+            color: #000;
         }
 
         .container {
@@ -63,7 +64,7 @@
         $servername = "localhost";
         $username = "root";
         $Password = "";
-        $dbname = "hitesh books store";
+        $dbname = "todomanager";
 
         // Create connection
         $conn = new mysqli($servername, $username, $Password, $dbname);
@@ -73,7 +74,7 @@
             die("Connection failed: " . $conn->connect_error);
         }
 
-        $query = $conn->prepare( "SELECT password FROM `users` WHERE email = ?");
+        $query = $conn->prepare( "SELECT password FROM `userData` WHERE email = ?");
         $query->bind_param("s",$email);
         $query->execute();
         $result = $query->get_result();
@@ -83,11 +84,16 @@
             $dbPassword = $row['password'];
 
             if ($password === $dbPassword) {
+                session_start(); // Start the session
+                $_SESSION['username'] = $email; // Store username in session
+                $_SESSION['user_id'] = $password; // Store user password in session
                 header("Location: home.php");
             }
             else{
-                header("Location: login.php");
+                echo "invalid password !!";
             }
+        }else{
+            echo "invalid email !!";
         }
         $conn->close();
     }
