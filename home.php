@@ -35,7 +35,6 @@
         .add-btn:hover {
             background: #0056b3;
         }
-<<<<<<< HEAD
         /* Home and Logout button styling: positioned at the top-left and top-right of the page */
         .home-btn {
             position: absolute;
@@ -71,9 +70,6 @@
         .logout-btn:hover {
             background: #c82333;
         }
-=======
-        
->>>>>>> b270162e6b77222e387903df99a5823bb371f971
     </style>
     <link rel="stylesheet" href="style.css">
 </head>
