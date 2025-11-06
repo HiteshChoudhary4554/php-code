@@ -82,7 +82,7 @@
     if ($conn->query($sql) === TRUE) {
       session_start(); // Start the session
       $_SESSION['username'] = $email; // Store username in session
-      $_SESSION['user_id'] = $password; // Store user password in session
+      $_SESSION['user_id'] = $Password; // Store user password in session
       header("Location: home.php");
     } else {
       echo "Error: " . $sql . "<br>" . $conn->error;
