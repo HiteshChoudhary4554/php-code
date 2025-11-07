@@ -3,6 +3,7 @@
 
 <head>
     <title>Add Todo</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,10 +23,7 @@
             text-align: center;
             margin-bottom: 25px;
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> ed42db8dcce62da7c8326bee14cea95b1ee2db55
         label {
             display: block;
             font-weight: 600;
@@ -37,10 +35,7 @@
         .form-group {
             margin-bottom: 14px;
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> ed42db8dcce62da7c8326bee14cea95b1ee2db55
         input[type="text"], textarea, input[type="date"], select {
             width: 100%;
             padding: 10px;
@@ -50,13 +45,9 @@
             box-sizing: border-box;
             font-size: 14px;
         }
-<<<<<<< HEAD
-        textarea { resize: vertical; }
-=======
 
         textarea { resize: vertical; }
 
->>>>>>> ed42db8dcce62da7c8326bee14cea95b1ee2db55
         button {
             width: 100%;
             padding: 10px;
@@ -66,41 +57,7 @@
             border-radius: 4px;
             font-size: 16px;
         }
-
-        /* Home and Logout button styling */
-        .home-btn {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            background: #28a745;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-            z-index: 1000;
-            transition: background 0.15s ease;
-        }
-        .home-btn:hover { background: #218838; }
-
-        .logout-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: #dc3545;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-            z-index: 1000;
-            transition: background 0.15s ease;
-        }
-        .logout-btn:hover { background: #c82333; }
     </style>
-    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -110,16 +67,76 @@
         // User is not logged in, redirect to login page
         header("Location: login.php");
         exit();
-    } 
+    }
+
+    // Database connection
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "todomanager";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Fetch categories from database
+    $categoryQuery = "SELECT * FROM category ORDER BY category";
+    $categories = $conn->query($categoryQuery);
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // You can add code here to save the todo to a database or file
-        // For now, just redirect to home.php after submit
-        header("Location: home.php");
-        exit();
+        // Save the todo into database (prepared statement)
+        $title = isset($_POST['title']) ? trim($_POST['title']) : '';
+        $description = isset($_POST['description']) ? trim($_POST['description']) : '';
+        $due_date = isset($_POST['due_date']) && $_POST['due_date'] !== '' ? $_POST['due_date'] : null;
+        $category_id = isset($_POST['category']) ? (int) $_POST['category'] : 0;
+
+        // Basic validation
+        if ($title === '' || $description === '' || $category_id === 0) {
+            // Missing required fields — show a simple error (you can improve UX later)
+            echo "<p style='color:red; text-align:center;'>Please fill title, description and select a category.</p>";
+        } else {
+            // Detect correct category column name in todo table (many schemas use category_id or category)
+            $catCol = null;
+            $colRes = $conn->query("SHOW COLUMNS FROM todo");
+            if ($colRes) {
+                while ($c = $colRes->fetch_assoc()) {
+                    $field = $c['Field'];
+                    if ($field === 'category_id' || $field === 'category' || strtolower($field) === 'categoryid' || $field === 'cat_id') {
+                        $catCol = $field;
+                        break;
+                    }
+                }
+            }
+
+            if (!$catCol) {
+                echo "<p style='color:red; text-align:center;'>Todo table does not have a category column (expected 'category_id' or 'category'). Please update your schema.</p>";
+            } else {
+                // Build dynamic insert SQL using the detected category column
+                $insertSql = "INSERT INTO todo (title, description, duedate, `" . $catCol . "`) VALUES (?, ?, ?, ?)";
+                $stmt = $conn->prepare($insertSql);
+                if ($stmt) {
+                    // bind params: title (s), description (s), duedate (s or null), category_id (i)
+                    $stmt->bind_param('sssi', $title, $description, $due_date, $category_id);
+                    if ($stmt->execute()) {
+                        // Redirect after successful insert
+                        header("Location: home.php");
+                        exit();
+                    } else {
+                        echo "<p style='color:red; text-align:center;'>Insert failed: " . htmlspecialchars($stmt->error) . "</p>";
+                    }
+                    $stmt->close();
+                } else {
+                    echo "<p style='color:red; text-align:center;'>Prepare failed: " . htmlspecialchars($conn->error) . "</p>";
+                }
+            }
+        }
     }
     ?>
-    <!-- Home and Logout buttons (HTML + CSS only). Update hrefs if needed -->
-    <a href="home.php" class="home-btn">Home</a>
+    <a href="home.php" class="homeUI-btn">Home</a>
     <a href="logout.php" class="logout-btn">Logout</a>
     <div class="container">
         <h2>Add Todo</h2>
@@ -138,9 +155,15 @@
             </div>
             <div class="form-group">
                 <label for="category">Category</label>
-                <select id="category" name="category">
-                    <option value="" disabled selected>Select category (will load from DB)</option>
-                    <!-- Options will be populated from database in server-side code later -->
+                <select id="category" name="category" required>
+                    <option value="" disabled selected>Select category</option>
+                    <?php
+                    if ($categories->num_rows > 0) {
+                        while($category = $categories->fetch_assoc()) {
+                            echo "<option value='" . $category['id'] . "'>" . htmlspecialchars($category['category']) . "</option>";
+                        }
+                    }
+                    ?>
                 </select>
             </div>
             <button type="submit">Add Todo</button>

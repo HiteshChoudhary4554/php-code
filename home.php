@@ -8,6 +8,7 @@
             font-family: Arial, sans-serif;
             background: #f2f2f2;
         }
+
         .container {
             width: 350px;
             margin: 80px auto;
@@ -35,40 +36,42 @@
         .add-btn:hover {
             background: #0056b3;
         }
-        /* Home and Logout button styling: positioned at the top-left and top-right of the page */
-        .home-btn {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            background: #28a745;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 4px;
+
+        /* ---- New Section for 3 Buttons ---- */
+        .btn-section {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 50px;
+        }
+
+        .circle-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-decoration: none;
+            color: #333;
             font-weight: 600;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            z-index: 1000;
-            transition: background 0.15s ease;
         }
-        .home-btn:hover {
-            background: #218838;
+
+        .circle-btn img {
+            width: 50px;
+            height: 50px;
+            background: #c5ccd4ff;
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, background 0.2s ease;
         }
-        .logout-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: #dc3545;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            z-index: 1000;
-            transition: background 0.15s ease;
+
+        .circle-btn img:hover {
+            background: #d5d9ddff;
+            transform: scale(1.1);
         }
-        .logout-btn:hover {
-            background: #c82333;
+
+        .circle-btn p {
+            margin-top: 8px;
+            font-size: 14px;
         }
     </style>
     <link rel="stylesheet" href="style.css">
@@ -84,7 +87,6 @@
     } 
     ?>
     <!-- Home and Logout buttons (HTML + CSS only). Update hrefs if needed -->
-    <a href="home.php" class="home-btn">Home</a>
     <a href="logout.php" class="logout-btn">Logout</a>
     <div class="container">
         <h2>Welcome to Todo Manager</h2>
@@ -92,5 +94,24 @@
             <button type="submit" class="add-btn" title="Add New Todo">+</button>
         </form>
     </div>
+
+    <!-- ✅ New Button Section Added Below -->
+    <div class="btn-section">
+        <a href="categoryAdd.php" class="circle-btn">
+            <img src="categeory.png" alt="Category">
+            <p>Category</p>
+        </a>
+
+        <a href="#" class="circle-btn">
+            <img src="report.png" alt="Report">
+            <p>Report</p>
+        </a>
+
+        <a href="#" class="circle-btn">
+            <img src="search.png" alt="Search">
+            <p>Search</p>
+        </a>
+    </div>
+
 </body>
 </html>
