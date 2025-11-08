@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Add Category</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/php-code/style.css">
     <style>
         body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+        }
+
+        // If caller passed a 'from' parameter (e.g. todo.php -> categoryAdd.php?from=todo)
+        // we preserve it so the page can show a Back button and keep context when redirecting.
+        $from =isset($_GET['from']) ? $_GET['from'] : null;
+
+        < !DOCTYPE html><html><head><title>Add Category</title><link rel="stylesheet" href="/php-code/style.css"><style>body {
             font-family: Arial, sans-serif;
             background: #f2f2f2;
         }
@@ -66,7 +76,7 @@
             margin-top: 30px;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         table {
@@ -128,14 +138,18 @@
         }
     </style>
 </head>
+
 <body>
     <?php
     session_start();
     if (!isset($_SESSION['username'])) {
         // User is not logged in, redirect to login page
         header("Location: login.php");
-        exit(); 
-    } 
+        exit();
+    }
+
+    // Preserve 'from' if present (e.g. todo.php -> categoryAdd.php?from=todo)
+    $from = isset($_GET['from']) ? $_GET['from'] : null;
 
     // add category in database
     // database connection
@@ -149,7 +163,7 @@
 
     // Check connection
     if ($conn->connect_error) {
-       die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: " . $conn->connect_error);
     }
 
     // Handle category deletion
@@ -159,7 +173,9 @@
         $stmt = $conn->prepare($deleteQuery);
         $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
-            header("Location: " . $_SERVER['PHP_SELF']);
+            // Preserve ?from=... when redirecting back to this page
+            $loc = $_SERVER['PHP_SELF'] . ($from ? '?from=' . urlencode($from) : '');
+            header("Location: " . $loc);
             exit();
         }
     }
@@ -171,9 +187,11 @@
         $categoryName = $_POST['category_name'];
 
         $sql = "INSERT INTO `category` (`category`) VALUES ('$categoryName')";
-        
+
         if ($conn->query($sql) === TRUE) {
-            header("Location: " . $_SERVER['PHP_SELF']);
+            // After adding, preserve 'from' so the user can go back if needed
+            $loc = $_SERVER['PHP_SELF'] . ($from ? '?from=' . urlencode($from) : '');
+            header("Location: " . $loc);
             exit();
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
@@ -182,7 +200,11 @@
 
     ?>
     <!-- Navigation buttons -->
-    <a href="home.php" class="homeUI-btn">Home</a>
+    <?php if ($from === 'todo'): ?>
+        <a href="todo.php" class="homeUIX">Back</a>
+    <?php else: ?>
+        <a href="home.php" class="homeUIX">Home</a>
+    <?php endif; ?>
     <a href="logout.php" class="logout-btn">Logout</a>
 
     <div class="container">
@@ -213,7 +235,8 @@
                         echo "<td class='sr-no'>" . $index . "</td>"; // Use index instead of id
                         echo "<td>" . htmlspecialchars($row['category']) . "</td>";
                         echo "<td class='action-column'>";
-                        echo "<a href='?delete=" . $row['id'] . "' class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this category?\")'>Delete</a>";
+                        // Preserve 'from' in delete link so context isn't lost
+                        echo "<a href='?delete=" . $row['id'] . ($from ? '&from=' . htmlspecialchars($from) : '') . "' class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this category?\")'>Delete</a>";
                         echo "</td>";
                         echo "</tr>";
                         $index++; // Increment counter
@@ -224,4 +247,5 @@
         </div>
     </div>
 </body>
+
 </html>

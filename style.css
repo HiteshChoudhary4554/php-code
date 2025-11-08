@@ -1,36 +1,40 @@
 .logout-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: #dc3545;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            z-index: 1000;
-            transition: background 0.15s ease;
-        }
-        .logout-btn:hover {
-            background: #c82333;
-        }
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #dc3545;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: background 0.15s ease;
+}
+.logout-btn:hover {
+  background: #c82333;
+}
 
-/* Home button positioned from the right by 110px and near the top */
+/* Home button positioned from the right by 110px and near the top
+   Support both class names (.homeUIX and .homeUI-btn) so pages stay consistent */
+.homeUIX,
 .homeUI-btn {
-            position: absolute;
-            top: 16px;
-            right: 110px;
-            background: #28a745;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            z-index: 1000;
-            transition: background 0.15s ease;
-        }
-        .homeUI-btn:hover {
-            background: #218838;
-        }
+  position: absolute;
+  top: 16px;
+  right: 110px;
+  background: #28a745;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: background 0.15s ease;
+  display: inline-block;
+}
+.homeUIX:hover,
+.homeUI-btn:hover {
+  background: #218838;
+}
