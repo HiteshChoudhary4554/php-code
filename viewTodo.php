@@ -171,7 +171,8 @@ $db->close();
 </head>
 
 <body>
-    <a href="home.php" class="homeUI-btn">Home</a>
+    <a href="home.php" class="homeUI-btn">Back</a>
+    <a href="logout.php" class="logout-btn">Logout</a>
 
     <div class="todo-detail-container">
         <div class="todo-header">

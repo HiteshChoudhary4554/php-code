@@ -236,7 +236,8 @@
         }
     }
     ?>
-    <a href="home.php" class="homeUIX">Home</a>
+    <link rel="stylesheet" href="style.css">
+    <a href="home.php" class="homeUI-btn">Home</a>
     <a href="logout.php" class="logout-btn">Logout</a>
     <div class="container">
         <h2><?php echo $isEdit ? 'Edit Todo' : 'Add Todo'; ?></h2>

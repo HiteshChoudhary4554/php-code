@@ -9,6 +9,81 @@
             background: #f2f2f2;
         }
 
+        /* Search Bar Styles */
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            position: relative;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 2px 12px rgba(0,123,255,0.15);
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-top: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background: #f5f7ff;
+        }
+
+        .suggestion-title {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .suggestion-category {
+            color: #666;
+            font-size: 0.9em;
+            padding-left: 15px;
+        }
+
         .container {
             width: 350px;
             margin: 80px auto;
@@ -88,6 +163,15 @@
     ?>
     <!-- Home and Logout buttons (HTML + CSS only). Update hrefs if needed -->
     <a href="logout.php" class="logout-btn">Logout</a>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search todos..." autocomplete="off">
+            <div id="searchSuggestions" class="search-suggestions"></div>
+        </div>
+    </div>
+
     <div class="container">
         <h2>Welcome to Todo Manager</h2>
         <form action="todo.php" method="get">
@@ -215,6 +299,85 @@
         $db->close();
     }
     ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const suggestionsBox = document.getElementById('searchSuggestions');
+            let searchTimeout = null;
+
+            // Close suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                    suggestionsBox.style.display = 'none';
+                }
+            });
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                
+                // Clear previous timeout
+                if (searchTimeout) {
+                    clearTimeout(searchTimeout);
+                }
+
+                // Hide suggestions if query is too short
+                if (query.length < 2) {
+                    suggestionsBox.style.display = 'none';
+                    return;
+                }
+
+                // Set new timeout to avoid too many requests
+                searchTimeout = setTimeout(() => {
+                    fetch(`search_todos.php?query=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(suggestions => {
+                            suggestionsBox.innerHTML = '';
+                            
+                            if (suggestions.length === 0) {
+                                suggestionsBox.style.display = 'none';
+                                return;
+                            }
+
+                            suggestions.forEach(todo => {
+                                const div = document.createElement('div');
+                                div.className = 'suggestion-item';
+                                
+                                // Create the content with title and category
+                                const content = `
+                                    <div class="suggestion-title">${escapeHtml(todo.title)}</div>
+                                    <div class="suggestion-category">${todo.category || 'No category'}</div>
+                                `;
+                                
+                                div.innerHTML = content;
+                                
+                                // Add click handler to go to todo details
+                                div.addEventListener('click', () => {
+                                    window.location.href = `viewTodo.php?id=${todo.id}`;
+                                });
+                                
+                                suggestionsBox.appendChild(div);
+                            });
+                            
+                            suggestionsBox.style.display = 'block';
+                        })
+                        .catch(error => {
+                            console.error('Error fetching suggestions:', error);
+                        });
+                }, 300); // Wait 300ms after last keystroke
+            });
+
+            // Helper function to escape HTML
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+        });
+    </script>
 
     <style>
         /* small styles for the todo list on home page */

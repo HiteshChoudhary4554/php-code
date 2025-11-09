@@ -199,11 +199,13 @@
     }
 
     ?>
+    
     <!-- Navigation buttons -->
+     <link rel="stylesheet" href="style.css">
     <?php if ($from === 'todo'): ?>
-        <a href="todo.php" class="homeUIX">Back</a>
+        <a href="todo.php" class="homeUI-btn">Back</a>
     <?php else: ?>
-        <a href="home.php" class="homeUIX">Home</a>
+        <a href="home.php" class="homeUI-btn">Home</a>
     <?php endif; ?>
     <a href="logout.php" class="logout-btn">Logout</a>
 

@@ -117,6 +117,10 @@ if ($completionRate >= 90) {
 </head>
 
 <body>
+    <link rel="stylesheet" href="style.css">
+    <a href="home.php" class="homeUI-btn">Home</a>
+    <a href="logout.php" class="logout-btn">Logout</a>
+    
     <h1>📊 Monthly Todo Report</h1>
 
     <?php if ($totalTasks > 0): ?>

@@ -115,6 +115,10 @@ if (isset($_GET['query'])) {
 </style>
 </head>
 <body>
+    <link rel="stylesheet" href="style.css">
+    <a href="home.php" class="homeUI-btn">Home</a>
+    <a href="logout.php" class="logout-btn">Logout</a>
+    
 <div class="container">
     <h2>🔍 Search Todo by Title</h2>
 
