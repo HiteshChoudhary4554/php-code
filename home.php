@@ -163,15 +163,6 @@
     ?>
     <!-- Home and Logout buttons (HTML + CSS only). Update hrefs if needed -->
     <a href="logout.php" class="logout-btn">Logout</a>
-    
-    <!-- Search Bar -->
-    <div class="search-container">
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search todos..." autocomplete="off">
-            <div id="searchSuggestions" class="search-suggestions"></div>
-        </div>
-    </div>
-
     <div class="container">
         <h2>Welcome to Todo Manager</h2>
         <form action="todo.php" method="get">
@@ -233,7 +224,15 @@
 
         $todos = $db->query($sql);
         if ($todos && $todos->num_rows > 0) {
-            echo "<div class=\"todo-list-container\" style=\"max-width:700px;margin:30px auto;\">";
+            // Search Bar above Todo Stack
+            echo "<div class=\"search-container\" style=\"max-width:700px;margin:30px auto 10px auto;padding:0;\">";
+            echo "<div class=\"search-box\">";
+            echo "<input type=\"text\" id=\"searchInput\" placeholder=\"Search todos...\" autocomplete=\"off\">";
+            echo "<div id=\"searchSuggestions\" class=\"search-suggestions\"></div>";
+            echo "</div>";
+            echo "</div>";
+
+            echo "<div class=\"todo-list-container\" style=\"max-width:700px;margin:10px auto;\">";
             // Heading and column headers
             echo "<h3 style=\"margin:12px 16px 6px 16px;font-size:18px;color:#222;text-align:center\">Todo Stack</h3>";
             // headers laid out as explicit columns: date / title / category / action
