@@ -77,7 +77,7 @@
       die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql =  "INSERT INTO `userdata` (`firstname`, `lastname`, `email`, `Password`)
+    $sql = "INSERT INTO `userdata` (`firstname`, `lastname`, `email`, `Password`)
         VALUES ('$firstname', '$lastname', '$email', '$Password')";
     if ($conn->query($sql) === TRUE) {
       session_start(); // Start the session
@@ -97,19 +97,12 @@
       <input type="text" name="firstname" placeholder="First Name" required />
       <input type="text" name="lastname" placeholder="Last Name" required />
       <input type="email" name="gmailid" placeholder="Gmail ID" required />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        required />
-      <input
-        type="password"
-        name="confirmpassword"
-        placeholder="Confirm Password"
-        required />
+      <input type="password" name="password" placeholder="Password" required />
+      <input type="password" name="confirmpassword" placeholder="Confirm Password" required />
       <button type="submit">Register</button>
       <a class="login-link" href="login.php">Already have an account? Login</a>
     </form>
   </div>
 </body>
+
 </html>

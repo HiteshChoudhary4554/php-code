@@ -247,17 +247,20 @@
             <?php } ?>
             <div class="form-group">
                 <label for="title">Todo Title</label>
-                <input type="text" id="title" name="title" placeholder="Enter title" required value="<?php echo isset(
-                                                                                                            $draft['title']
-                                                                                                        ) ? htmlspecialchars($draft['title']) : ''; ?>">
+                <input type="text" id="title" name="title" placeholder="Enter title" required
+                    value="<?php echo isset(
+                        $draft['title']
+                    ) ? htmlspecialchars($draft['title']) : ''; ?>">
             </div>
             <div class="form-group">
                 <label for="description">Task Description</label>
-                <textarea id="description" name="description" rows="4" placeholder="Describe the task" required><?php echo isset($draft['description']) ? htmlspecialchars($draft['description']) : ''; ?></textarea>
+                <textarea id="description" name="description" rows="4" placeholder="Describe the task"
+                    required><?php echo isset($draft['description']) ? htmlspecialchars($draft['description']) : ''; ?></textarea>
             </div>
             <div class="form-group">
                 <label for="due_date">Due Date</label>
-                <input type="date" id="due_date" name="due_date" value="<?php echo isset($draft['due_date']) ? htmlspecialchars($draft['due_date']) : ''; ?>">
+                <input type="date" id="due_date" name="due_date"
+                    value="<?php echo isset($draft['due_date']) ? htmlspecialchars($draft['due_date']) : ''; ?>">
             </div>
             <div class="form-group">
                 <label for="category">Category</label>
@@ -268,7 +271,7 @@
                         if ($categories->num_rows > 0) {
                             while ($category = $categories->fetch_assoc()) {
                                 $sel = '';
-                                if (isset($draft['category']) && (string)$draft['category'] === (string)$category['id']) {
+                                if (isset($draft['category']) && (string) $draft['category'] === (string) $category['id']) {
                                     $sel = ' selected';
                                 }
                                 echo "<option value='" . $category['id'] . "'" . $sel . ">" . htmlspecialchars($category['category']) . "</option>";
@@ -276,10 +279,12 @@
                         }
                         ?>
                     </select>
-                    <button type="submit" name="action" value="add_category" formnovalidate class="add-category-btn" title="Add Category">Add</button>
+                    <button type="submit" name="action" value="add_category" formnovalidate class="add-category-btn"
+                        title="Add Category">Add</button>
                 </div>
             </div>
-            <button type="submit" name="action" value="save_todo"><?php echo $isEdit ? 'Update Todo' : 'Add Todo'; ?></button>
+            <button type="submit" name="action"
+                value="save_todo"><?php echo $isEdit ? 'Update Todo' : 'Add Todo'; ?></button>
         </form>
     </div>
 </body>

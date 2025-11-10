@@ -30,7 +30,7 @@
             font-size: 16px;
             border: 2px solid #ddd;
             border-radius: 25px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
             box-sizing: border-box;
         }
@@ -38,7 +38,7 @@
         #searchInput:focus {
             outline: none;
             border-color: #007bff;
-            box-shadow: 0 2px 12px rgba(0,123,255,0.15);
+            box-shadow: 0 2px 12px rgba(0, 123, 255, 0.15);
         }
 
         .search-suggestions {
@@ -48,7 +48,7 @@
             right: 0;
             background: white;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             margin-top: 5px;
             max-height: 300px;
             overflow-y: auto;
@@ -300,21 +300,21 @@
     ?>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
             const suggestionsBox = document.getElementById('searchSuggestions');
             let searchTimeout = null;
 
             // Close suggestions when clicking outside
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
                     suggestionsBox.style.display = 'none';
                 }
             });
 
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('input', function () {
                 const query = this.value.trim();
-                
+
                 // Clear previous timeout
                 if (searchTimeout) {
                     clearTimeout(searchTimeout);
@@ -332,7 +332,7 @@
                         .then(response => response.json())
                         .then(suggestions => {
                             suggestionsBox.innerHTML = '';
-                            
+
                             if (suggestions.length === 0) {
                                 suggestionsBox.style.display = 'none';
                                 return;
@@ -341,23 +341,23 @@
                             suggestions.forEach(todo => {
                                 const div = document.createElement('div');
                                 div.className = 'suggestion-item';
-                                
+
                                 // Create the content with title and category
                                 const content = `
                                     <div class="suggestion-title">${escapeHtml(todo.title)}</div>
                                     <div class="suggestion-category">${todo.category || 'No category'}</div>
                                 `;
-                                
+
                                 div.innerHTML = content;
-                                
+
                                 // Add click handler to go to todo details
                                 div.addEventListener('click', () => {
                                     window.location.href = `viewTodo.php?id=${todo.id}`;
                                 });
-                                
+
                                 suggestionsBox.appendChild(div);
                             });
-                            
+
                             suggestionsBox.style.display = 'block';
                         })
                         .catch(error => {

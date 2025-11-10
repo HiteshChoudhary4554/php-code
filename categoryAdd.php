@@ -199,9 +199,9 @@
     }
 
     ?>
-    
+
     <!-- Navigation buttons -->
-     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
     <?php if ($from === 'todo'): ?>
         <a href="todo.php" class="homeUI-btn">Back</a>
     <?php else: ?>

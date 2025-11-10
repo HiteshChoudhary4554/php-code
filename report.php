@@ -24,8 +24,8 @@ $doneQuery = "SELECT COUNT(*) as done FROM todo WHERE status = 'done' AND MONTH(
 $doneResult = $conn->query($doneQuery);
 $doneTasks = $doneResult->fetch_assoc()['done'] ?? 0;
 
-// Fetch pending tasks
-$pendingQuery = "SELECT COUNT(*) as pending FROM todo WHERE (status IS NULL OR status = '') AND MONTH(duedate) = '$currentMonth' AND YEAR(duedate) = '$currentYear'";
+// Fetch pending tasks (tasks that are not marked as 'done')
+$pendingQuery = "SELECT COUNT(*) as pending FROM todo WHERE (status != 'done' OR status IS NULL) AND MONTH(duedate) = '$currentMonth' AND YEAR(duedate) = '$currentYear'";
 $pendingResult = $conn->query($pendingQuery);
 $pendingTasks = $pendingResult->fetch_assoc()['pending'] ?? 0;
 
@@ -120,7 +120,7 @@ if ($completionRate >= 90) {
     <link rel="stylesheet" href="style.css">
     <a href="home.php" class="homeUI-btn">Home</a>
     <a href="logout.php" class="logout-btn">Logout</a>
-    
+
     <h1>📊 Monthly Todo Report</h1>
 
     <?php if ($totalTasks > 0): ?>

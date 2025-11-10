@@ -178,9 +178,9 @@ $db->close();
         <div class="todo-header">
             <div>
                 <div class="todo-due-date">Due: <?php
-                                                $duedate = $todo['duedate'] ?? null;
-                                                echo $duedate ? date('Y-m-d', strtotime($duedate)) : 'No date set';
-                                                ?></div>
+                $duedate = $todo['duedate'] ?? null;
+                echo $duedate ? date('Y-m-d', strtotime($duedate)) : 'No date set';
+                ?></div>
                 <h1 class="todo-title"><?php echo htmlspecialchars($todo['title']); ?></h1>
             </div>
             <span class="todo-category"><?php echo htmlspecialchars($todo['category_name'] ?? 'No Category'); ?></span>
@@ -203,7 +203,9 @@ $db->close();
 
         <div class="action-buttons">
             <button onclick="location.href='todo.php?id=<?php echo $todoId; ?>'" class="edit-btn">Edit</button>
-            <button onclick="if(confirm('Are you sure you want to delete this todo?')) location.href='deleteTodo.php?id=<?php echo $todoId; ?>'" class="delete-btn">Delete</button>
+            <button
+                onclick="if(confirm('Are you sure you want to delete this todo?')) location.href='deleteTodo.php?id=<?php echo $todoId; ?>'"
+                class="delete-btn">Delete</button>
         </div>
     </div>
 </body>

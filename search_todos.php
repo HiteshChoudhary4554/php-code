@@ -64,7 +64,7 @@ $suggestions = [];
 while ($row = $result->fetch_assoc()) {
     // Format the date if it exists
     $dueDate = !empty($row['duedate']) ? date('Y-m-d', strtotime($row['duedate'])) : 'No date';
-    
+
     $suggestions[] = [
         'id' => $row['id'],
         'title' => $row['title'],
