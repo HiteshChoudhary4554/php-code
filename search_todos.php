@@ -16,17 +16,9 @@ if (strlen($query) < 2) {
     exit;
 }
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "todomanager";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    http_response_code(500);
-    exit('Database connection failed');
-}
+require 'Database.php';
+$db = new Database();
+$conn = $db->connect("localhost", "root", "", "todomanager");
 
 // Detect category column name
 $catCol = null;

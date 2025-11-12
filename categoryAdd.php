@@ -153,18 +153,9 @@
 
     // add category in database
     // database connection
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "todomanager";
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    require 'Database.php';
+    $db = new Database();
+    $conn = $db->connect("localhost", "root", "", "todomanager");
 
     // Handle category deletion
     if (isset($_GET['delete'])) {

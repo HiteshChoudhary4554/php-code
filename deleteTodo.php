@@ -15,16 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['todo_id'])) {
 
 if ($todoId > 0) {
 
-    $dbHost = 'localhost';
-    $dbUser = 'root';
-    $dbPass = '';
-    $dbName = 'todomanager';
-
-    $db = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
-    if (!$db || $db->connect_error) {
-        header("Location: home.php?error=db");
-        exit();
-    }
+    require 'Database.php';
+    $conn = new Database();
+    $db = $conn->connect("localhost", "root", "", "todomanager");
 
     // Delete the todo item
     $stmt = $db->prepare("DELETE FROM todo WHERE id = ?");

@@ -63,19 +63,9 @@
     $Password = $_POST['password'];
     $confirmpassword = $_POST['confirmpassword'];
 
-    // database connection
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "todomanager";
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Check connection
-    if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
-    }
+    require 'Database.php';
+    $db = new Database();
+    $conn = $db->connect("localhost", "root", "", "todomanager");
 
     $sql = "INSERT INTO `userdata` (`firstname`, `lastname`, `email`, `Password`)
         VALUES ('$firstname', '$lastname', '$email', '$Password')";

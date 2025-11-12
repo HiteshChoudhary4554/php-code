@@ -13,16 +13,9 @@ if (!isset($_GET['id'])) {
 
 $todoId = intval($_GET['id']);
 
-// Database connection
-$dbHost = 'localhost';
-$dbUser = 'root';
-$dbPass = '';
-$dbName = 'todomanager';
-
-$db = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
-if ($db->connect_error) {
-    die("Connection failed: " . $db->connect_error);
-}
+require 'Database.php';
+$conn = new Database();
+$db = $conn->connect("localhost", "root", "", "todomanager");
 
 // Detect category column name
 $todoCatCol = null;

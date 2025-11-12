@@ -100,23 +100,14 @@
         exit();
     }
 
-    // Database connection
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "todomanager";
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    require 'Database.php';
+    $db = new Database();
+    $conn = $db->connect("localhost", "root", "", "todomanager");
 
     // Fetch categories from database
     $categoryQuery = "SELECT * FROM category ORDER BY category";
     $categories = $conn->query($categoryQuery);
+
 
     // Load draft from session if present (for prefilling after returning from add-category)
     $draft = isset($_SESSION['todo_draft']) ? $_SESSION['todo_draft'] : null;
@@ -247,10 +238,9 @@
             <?php } ?>
             <div class="form-group">
                 <label for="title">Todo Title</label>
-                <input type="text" id="title" name="title" placeholder="Enter title" required
-                    value="<?php echo isset(
-                        $draft['title']
-                    ) ? htmlspecialchars($draft['title']) : ''; ?>">
+                <input type="text" id="title" name="title" placeholder="Enter title" required value="<?php echo isset(
+                    $draft['title']
+                ) ? htmlspecialchars($draft['title']) : ''; ?>">
             </div>
             <div class="form-group">
                 <label for="description">Task Description</label>
@@ -271,10 +261,13 @@
                         if ($categories->num_rows > 0) {
                             while ($category = $categories->fetch_assoc()) {
                                 $sel = '';
-                                if (isset($draft['category']) && (string) $draft['category'] === (string) $category['id']) {
-                                    $sel = ' selected';
+                                // agar draft me category hai aur wo current category id ke barabar hai
+                                if (!empty($draft['category']) && $draft['category'] == $category['id']) {
+                                    $sel = 'selected'; // tab is option ko selected bana do
                                 }
-                                echo "<option value='" . $category['id'] . "'" . $sel . ">" . htmlspecialchars($category['category']) . "</option>";
+                                // dropdown option print karo
+                                echo "<option value='{$category['id']}' $sel>{$category['category']}</option>";
+
                             }
                         }
                         ?>

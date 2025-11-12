@@ -60,26 +60,17 @@
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = $_POST['email'];
         $password = $_POST['password'];
-        
-        $servername = "localhost";
-        $username = "root";
-        $Password = "";
-        $dbname = "todomanager";
 
-        // Create connection
-        $conn = new mysqli($servername, $username, $Password, $dbname);
-
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        $query = $conn->prepare( "SELECT password FROM `userData` WHERE email = ?");
-        $query->bind_param("s",$email);
+        require 'Database.php';
+        $db = new Database();
+        $conn = $db->connect("localhost", "root", "", "todomanager");
+    
+        $query = $conn->prepare("SELECT password FROM `userData` WHERE email = ?");
+        $query->bind_param("s", $email);
         $query->execute();
         $result = $query->get_result();
 
-        if($result->num_rows === 1){
+        if ($result->num_rows === 1) {
             $row = $result->fetch_assoc();
             $dbPassword = $row['password'];
 
@@ -88,11 +79,10 @@
                 $_SESSION['username'] = $email; // Store username in session
                 $_SESSION['user_id'] = $password; // Store user password in session
                 header("Location: home.php");
-            }
-            else{
+            } else {
                 echo "invalid password !!";
             }
-        }else{
+        } else {
             echo "invalid email !!";
         }
         $conn->close();

@@ -192,111 +192,107 @@
     <!-- Todo list (title left, category right). Click opens a details page -->
     <?php
     // DB connection to fetch todos
-    $dbHost = 'localhost';
-    $dbUser = 'root';
-    $dbPass = '';
-    $dbName = 'todomanager';
-    $db = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
-    if (!$db || $db->connect_error) {
-        // don't break the page; just skip listing
-    } else {
-        // detect category column name in todo table (flexible)
-        $todoCatCol = null;
-        $colRes = $db->query("SHOW COLUMNS FROM todo");
-        if ($colRes) {
-            while ($c = $colRes->fetch_assoc()) {
-                $field = $c['Field'];
-                $norm = preg_replace('/[^a-z0-9]/', '', strtolower($field));
-                if (strpos($norm, 'category') !== false || strpos($norm, 'cat') !== false) {
-                    $todoCatCol = $field; // use actual column name
-                    break;
-                }
+    require 'Database.php';
+    $conn = new Database();
+    $db = $conn->connect("localhost", "root", "", "todomanager");
+
+    // detect category column name in todo table (flexible)
+    $todoCatCol = null;
+    $colRes = $db->query("SHOW COLUMNS FROM todo");
+    if ($colRes) {
+        while ($c = $colRes->fetch_assoc()) {
+            $field = $c['Field'];
+            $norm = preg_replace('/[^a-z0-9]/', '', strtolower($field));
+            if (strpos($norm, 'category') !== false || strpos($norm, 'cat') !== false) {
+                $todoCatCol = $field; // use actual column name
+                break;
             }
         }
-
-        // build query using detected column (fallback to no join)
-        if ($todoCatCol) {
-            // Put completed items (status = 'done') after pending ones, then sort by due date (NULLs last)
-            $sql = "SELECT t.id, t.title, t.duedate, t.status, c.category AS cat_name FROM todo t LEFT JOIN category c ON t.`" . $todoCatCol . "` = c.id ORDER BY CASE WHEN t.status = 'done' THEN 1 ELSE 0 END, CASE WHEN t.duedate IS NULL THEN 1 ELSE 0 END, t.duedate ASC";
-        } else {
-            $sql = "SELECT id, title, duedate, status, NULL AS cat_name FROM todo ORDER BY CASE WHEN status = 'done' THEN 1 ELSE 0 END, CASE WHEN duedate IS NULL THEN 1 ELSE 0 END, duedate ASC";
-        }
-
-        $todos = $db->query($sql);
-        if ($todos && $todos->num_rows > 0) {
-            // Search Bar above Todo Stack
-            echo "<div class=\"search-container\" style=\"max-width:700px;margin:30px auto 10px auto;padding:0;\">";
-            echo "<div class=\"search-box\">";
-            echo "<input type=\"text\" id=\"searchInput\" placeholder=\"Search todos...\" autocomplete=\"off\">";
-            echo "<div id=\"searchSuggestions\" class=\"search-suggestions\"></div>";
-            echo "</div>";
-            echo "</div>";
-
-            echo "<div class=\"todo-list-container\" style=\"max-width:700px;margin:10px auto;\">";
-            // Heading and column headers
-            echo "<h3 style=\"margin:12px 16px 6px 16px;font-size:18px;color:#222;text-align:center\">Todo Stack</h3>";
-            // headers laid out as explicit columns: date / title / category / action
-            echo "<div class=\"todo-headers\" style=\"display:flex;align-items:center;padding:8px 16px;font-weight:700;color:#444;border-bottom:1px solid #eee;\">";
-            echo "<div style=\"width:15%;\"><span class=\"hdr-date\">Due Date</span></div>";
-            echo "<div style=\"width:50%;\"><span class=\"hdr-title\">Title</span></div>";
-            echo "<div style=\"width:24%;text-align:right;padding-right:16px\"><span class=\"hdr-cat\" style=\"font-weight:700\">Category Name</span></div>";
-            echo "<div style=\"width:12%;text-align:right;padding-left:12px\"><span class=\"hdr-action\" style=\"font-size:0.95em;color:#666\">Action</span></div>";
-            echo "</div>";
-            echo "<ul class=\"todo-list\" style=\"list-style:none;padding:0;margin:0;\">";
-            while ($t = $todos->fetch_assoc()) {
-                $id = $t['id'];
-                $title = htmlspecialchars($t['title']);
-                $cat = htmlspecialchars($t['cat_name'] ?? '');
-                $rawDue = $t['duedate'] ?? '';
-                $dueDate = !empty($rawDue) ? date('Y-m-d', strtotime($rawDue)) : 'No date';
-                // treat NULL/empty status as 'pending' for display and logic
-                $status = !empty($t['status']) ? $t['status'] : 'pending';
-                $isDone = ($status === 'done');
-                // detect overdue: due date exists and is before today
-                $isOverdue = false;
-                if (!empty($rawDue)) {
-                    $isOverdue = (strtotime($rawDue) < strtotime(date('Y-m-d')));
-                }
-                $dateStyle = $isOverdue ? 'color:#d9534f;font-size:0.9em;' : 'color:#666;font-size:0.9em;';
-                $titleStyle = $isOverdue ? 'font-weight:600;color:#d9534f' : 'font-weight:600';
-                echo "<li class=\"todo-item\" style=\"padding:12px 16px;border-bottom:1px solid #eee;\">";
-                echo "<div style=\"display:flex;align-items:center;\">";
-
-                // date column
-                echo "<div style=\"width:15%;\"><span class=\"todo-date\" style=\"{$dateStyle}\">{$dueDate}</span></div>";
-
-                // title column (make only the title clickable)
-                echo "<div style=\"width:50%;\"><a href=\"viewTodo.php?id={$id}\" class=\"todo-link\" style=\"text-decoration:none;color:inherit;{$titleStyle}\">{$title}</a></div>";
-
-                // category column (add right padding to create gap)
-                echo "<div style=\"width:24%;text-align:right;color:#666;padding-right:16px\">{$cat}</div>";
-
-                // action column (add left padding so buttons sit farther right)
-                echo "<div style=\"width:12%;text-align:right;padding-left:12px\">";
-                if (!$isDone) {
-                    echo "<form action=\"updateStatus.php\" method=\"POST\" style=\"margin:0;display:inline-flex;align-items:center;justify-content:flex-end;\">";
-                    echo "<input type=\"hidden\" name=\"todo_id\" value=\"{$id}\">";
-                    echo "<button type=\"submit\" class=\"done-btn\" title=\"Mark as Done\" style=\"background:none;border:2px solid #28a745;color:#28a745;border-radius:4px;padding:6px 14px;cursor:pointer;transition:all 0.15s\">Done</button>";
-                    echo "</form>";
-                } else {
-                    // show checkmark and a Delete button next to it
-                    echo "<div style=\"display:inline-flex;gap:8px;align-items:center;justify-content:flex-end\">";
-                    echo "<span style=\"color:#28a745;font-size:20px\" title=\"Completed\">✓</span>";
-                    echo "<form action=\"deleteTodo.php\" method=\"POST\" style=\"margin:0\">";
-                    echo "<input type=\"hidden\" name=\"todo_id\" value=\"{$id}\">";
-                    echo "<button type=\"submit\" class=\"delete-btn\" title=\"Delete todo\" style=\"background:none;border:2px solid #dc3545;color:#dc3545;border-radius:4px;padding:6px 10px;cursor:pointer;transition:all 0.15s\">Delete</button>";
-                    echo "</form>";
-                    echo "</div>";
-                }
-                echo "</div>";
-
-                echo "</div>"; // row flex
-                echo "</li>";
-            }
-            echo "</ul></div>";
-        }
-        $db->close();
     }
+
+    // build query using detected column (fallback to no join)
+    if ($todoCatCol) {
+        // Put completed items (status = 'done') after pending ones, then sort by due date (NULLs last)
+        $sql = "SELECT t.id, t.title, t.duedate, t.status, c.category AS cat_name FROM todo t LEFT JOIN category c ON t.`" . $todoCatCol . "` = c.id ORDER BY CASE WHEN t.status = 'done' THEN 1 ELSE 0 END, CASE WHEN t.duedate IS NULL THEN 1 ELSE 0 END, t.duedate ASC";
+    } else {
+        $sql = "SELECT id, title, duedate, status, NULL AS cat_name FROM todo ORDER BY CASE WHEN status = 'done' THEN 1 ELSE 0 END, CASE WHEN duedate IS NULL THEN 1 ELSE 0 END, duedate ASC";
+    }
+
+    $todos = $db->query($sql);
+    if ($todos && $todos->num_rows > 0) {
+        // Search Bar above Todo Stack
+        echo "<div class=\"search-container\" style=\"max-width:700px;margin:30px auto 10px auto;padding:0;\">";
+        echo "<div class=\"search-box\">";
+        echo "<input type=\"text\" id=\"searchInput\" placeholder=\"Search todos...\" autocomplete=\"off\">";
+        echo "<div id=\"searchSuggestions\" class=\"search-suggestions\"></div>";
+        echo "</div>";
+        echo "</div>";
+
+        echo "<div class=\"todo-list-container\" style=\"max-width:700px;margin:10px auto;\">";
+        // Heading and column headers
+        echo "<h3 style=\"margin:12px 16px 6px 16px;font-size:18px;color:#222;text-align:center\">Todo Stack</h3>";
+        // headers laid out as explicit columns: date / title / category / action
+        echo "<div class=\"todo-headers\" style=\"display:flex;align-items:center;padding:8px 16px;font-weight:700;color:#444;border-bottom:1px solid #eee;\">";
+        echo "<div style=\"width:15%;\"><span class=\"hdr-date\">Due Date</span></div>";
+        echo "<div style=\"width:50%;\"><span class=\"hdr-title\">Title</span></div>";
+        echo "<div style=\"width:24%;text-align:right;padding-right:16px\"><span class=\"hdr-cat\" style=\"font-weight:700\">Category Name</span></div>";
+        echo "<div style=\"width:12%;text-align:right;padding-left:12px\"><span class=\"hdr-action\" style=\"font-size:0.95em;color:#666\">Action</span></div>";
+        echo "</div>";
+        echo "<ul class=\"todo-list\" style=\"list-style:none;padding:0;margin:0;\">";
+        while ($t = $todos->fetch_assoc()) {
+            $id = $t['id'];
+            $title = htmlspecialchars($t['title']);
+            $cat = htmlspecialchars($t['cat_name'] ?? '');
+            $rawDue = $t['duedate'] ?? '';
+            $dueDate = !empty($rawDue) ? date('Y-m-d', strtotime($rawDue)) : 'No date';
+            // treat NULL/empty status as 'pending' for display and logic
+            $status = !empty($t['status']) ? $t['status'] : 'pending';
+            $isDone = ($status === 'done');
+            // detect overdue: due date exists and is before today
+            $isOverdue = false;
+            if (!empty($rawDue)) {
+                $isOverdue = (strtotime($rawDue) < strtotime(date('Y-m-d')));
+            }
+            $dateStyle = $isOverdue ? 'color:#d9534f;font-size:0.9em;' : 'color:#666;font-size:0.9em;';
+            $titleStyle = $isOverdue ? 'font-weight:600;color:#d9534f' : 'font-weight:600';
+            echo "<li class=\"todo-item\" style=\"padding:12px 16px;border-bottom:1px solid #eee;\">";
+            echo "<div style=\"display:flex;align-items:center;\">";
+
+            // date column
+            echo "<div style=\"width:15%;\"><span class=\"todo-date\" style=\"{$dateStyle}\">{$dueDate}</span></div>";
+
+            // title column (make only the title clickable)
+            echo "<div style=\"width:50%;\"><a href=\"viewTodo.php?id={$id}\" class=\"todo-link\" style=\"text-decoration:none;color:inherit;{$titleStyle}\">{$title}</a></div>";
+
+            // category column (add right padding to create gap)
+            echo "<div style=\"width:24%;text-align:right;color:#666;padding-right:16px\">{$cat}</div>";
+
+            // action column (add left padding so buttons sit farther right)
+            echo "<div style=\"width:12%;text-align:right;padding-left:12px\">";
+            if (!$isDone) {
+                echo "<form action=\"updateStatus.php\" method=\"POST\" style=\"margin:0;display:inline-flex;align-items:center;justify-content:flex-end;\">";
+                echo "<input type=\"hidden\" name=\"todo_id\" value=\"{$id}\">";
+                echo "<button type=\"submit\" class=\"done-btn\" title=\"Mark as Done\" style=\"background:none;border:2px solid #28a745;color:#28a745;border-radius:4px;padding:6px 14px;cursor:pointer;transition:all 0.15s\">Done</button>";
+                echo "</form>";
+            } else {
+                // show checkmark and a Delete button next to it
+                echo "<div style=\"display:inline-flex;gap:8px;align-items:center;justify-content:flex-end\">";
+                echo "<span style=\"color:#28a745;font-size:20px\" title=\"Completed\">✓</span>";
+                echo "<form action=\"deleteTodo.php\" method=\"POST\" style=\"margin:0\">";
+                echo "<input type=\"hidden\" name=\"todo_id\" value=\"{$id}\">";
+                echo "<button type=\"submit\" class=\"delete-btn\" title=\"Delete todo\" style=\"background:none;border:2px solid #dc3545;color:#dc3545;border-radius:4px;padding:6px 10px;cursor:pointer;transition:all 0.15s\">Delete</button>";
+                echo "</form>";
+                echo "</div>";
+            }
+            echo "</div>";
+
+            echo "</div>"; // row flex
+            echo "</li>";
+        }
+        echo "</ul></div>";
+    }
+    $db->close();
+
     ?>
 
     <script>
